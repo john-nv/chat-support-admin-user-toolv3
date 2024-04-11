@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+
+body {
+    height: 100vh;
+    background-color: transparent;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bolder !important;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    border-radius: 10px;
+    background-color: rgb(231, 231, 231);
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    background-color: rgb(160, 159, 159);
+}
+
+.item-show-message {
+    display: flex;
+    align-items: end;
+    color: white;
+    clear: both;
+    font-size: 14px;
+    max-width: 55%;
+}
+
+@media only screen and (max-width: 600px) {
+    .item-show-message {
+        max-width: 90%;
+    }
+
+    .item-show-message-me span,
+    .item-show-message-you span {
+        font-size: 12px;
+    }
+
+    .item-show-message {
+        font-size: 13px;
+    }
+
+    .title-message-user span {
+        font-size: 13px;
+    }
+
+    .item-show-message p {
+        padding: 12px 16px 12px 16px;
+        margin-bottom: 3px;
+    }
+}
+
+.title-message-user span {
+    font-size: 15px;
+}
+
+.item-show-message p {
+    padding: 14px 18px 14px 18px;
+    margin-bottom: 3px;
+}
+
+.item-show-message-you-avt,
+.item-show-message-me-avt {
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 3px 1px;
+    padding: 3px;
+    margin-bottom: 5px;
+}
+
+.item-show-message-me-avt {
+    margin-left: 5px;
+    border-radius: 50% 50% 50% 0px;
+}
+
+.item-show-message-you-avt {
+    margin-right: 5px;
+    border-radius: 50% 50% 0px;
+}
+
+.item-show-message-me p,
+.item-show-message-you p {
+    background-color: #e84393 !important;
+    font-weight: bolder !important;
+}
+
+.item-show-message-you p {
+    border-radius: 18px 18px 18px 0px;
+    ;
+}
+
+
+.item-show-message-me p {
+    border-radius: 18px 18px 0px;
+}
+
+.item-show-message-me span,
+.item-show-message-you span {
+    color: #b1b3b5;
+    font-size: 12px;
+}
+
+.item-show-message-me span {
+    padding-right: 5px;
+}
+
+.item-show-message-you span {
+    padding-left: 5px;
+}
