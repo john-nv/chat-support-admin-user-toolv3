@@ -1,6 +1,6 @@
 $(document).ready(function () {
     let HOST = ""
-    // HOST = "http://live.wynncasino.top"
+    HOST = "https://livechat.toolv3.io.vn/"
     _apiVeriAccount()
     $('#btn-login').on('click', async () => {
         let username = $('#username').val()
