@@ -8,7 +8,7 @@ $(document).ready(async () => {
     const newMsg = new Audio('./voice/newMsg.mp3');
     const sendMsg = new Audio('./voice/sendMsg.mp3');
     let volume = localStorage.getItem('volumeSetting') === 'true';
-    let msgWelcome = 'Chào bạn'
+    let msgWelcome = 'Hello !'
     getConfig()
 
     $('.volume i').toggleClass('fa-volume-high', volume).toggleClass('fa-volume-xmark', !volume);
@@ -104,7 +104,7 @@ $(document).ready(async () => {
 
         if (msgReply < 1) {
             msgReply++
-            $('.show-message-user').append(sendMessageYou("Vui lòng đợi một lát, chúng tôi sẽ liên hệ lại bạn ngay !!!", true));
+            $('.show-message-user').append(sendMessageYou("We have received and processed your request, you will see effect on Order in 5-10 minutes. Important: This bot only solve Order ID and have no reply, we will reach you on Ticket or Chat platforms if needed more infos. If you ask for something, please send us message on left side menu or reach our contacts on About / Support page!", true));
         }
         $('.show-message-user').scrollTop($('.show-message-user')[0].scrollHeight);
     }
