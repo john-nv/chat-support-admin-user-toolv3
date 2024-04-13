@@ -1,18 +1,28 @@
-$(document).ready(async () => {
+$(document).ready(async() => {
     let HOST = ""
-    // let page = 1
-    // let pageSize = 5
+        // let page = 1
+        // let pageSize = 5
     HOST = "https://livechat.toolv3.io.vn/"
-    let msgReply = 0
+    let msgReplyCount = 0
     const socket = io(HOST, { path: "/user" });
     const newMsg = new Audio('./voice/newMsg.mp3');
     const sendMsg = new Audio('./voice/sendMsg.mp3');
+
+    let volumeSetting = localStorage.getItem('volumeSetting');
+
+    if (volumeSetting !== 'true' && volumeSetting !== 'false') {
+        localStorage.setItem('volumeSetting', 'true');
+        console.log(localStorage.getItem('volumeSetting'));
+    }
+
+
     let volume = localStorage.getItem('volumeSetting') === 'true';
     let msgWelcome = 'Hello !'
+    let msgReply = 'OK'
     getConfig()
 
     $('.volume i').toggleClass('fa-volume-high', volume).toggleClass('fa-volume-xmark', !volume);
-    $('.volume').click(function () {
+    $('.volume').click(function() {
         var icon = $(this).find('i');
         volume = !volume;
         localStorage.setItem('volumeSetting', volume);
@@ -23,9 +33,10 @@ $(document).ready(async () => {
         $.ajax({
             type: "POST",
             url: "/message/getConfig",
-            success: function (response) {
-                console.log(response.msgWelcome)
+            success: function(response) {
+                console.log(response)
                 msgWelcome = response.msgWelcome
+                msgReply = response.msgReply
             }
         });
     }
@@ -49,7 +60,7 @@ $(document).ready(async () => {
         socket.emit('init', { userId: socket.userId, socketId: socket.id, userName: socket.userName });
     })
 
-    socket.on('connect', async () => {
+    socket.on('connect', async() => {
         console.info(`socket.id ${socket.id}`);
         const socketId = localStorage.getItem('socketId');
         const userName = localStorage.getItem('userName');
@@ -81,7 +92,7 @@ $(document).ready(async () => {
 
     $('#send-message').on('click', () => { _sendMessage() });
 
-    $('#value-message').on('keypress', function (event) {
+    $('#value-message').on('keypress', function(event) {
         if (event.which === 13 && !event.shiftKey) {
             _sendMessage();
         }
@@ -90,22 +101,25 @@ $(document).ready(async () => {
     function _sendMessage() {
         const message = $('#value-message').val();
         console.log(message)
+        const userName = localStorage.getItem('userName');
         if (message.length < 1) return;
 
         $('.show-message-user').append(sendMessageMe(message, true));
+
 
         socket.emit('message', {
             socketId: socket.id,
             userId: socket.userId,
             message,
+            userName
         });
         if (volume) sendMsg.play()
         $('#value-message').val("");
 
-        if (msgReply < 1) {
-            msgReply++
-            $('.show-message-user').append(sendMessageYou("We have received and processed your request, you will see effect on Order in 5-10 minutes. Important: This bot only solve Order ID and have no reply, we will reach you on Ticket or Chat platforms if needed more infos. If you ask for something, please send us message on left side menu or reach our contacts on About / Support page!", true));
-        }
+        // if (msgReplyCount < 1) {
+        //     msgReplyCount++
+        $('.show-message-user').append(sendMessageYou(msgReply, true));
+        // }
         $('.show-message-user').scrollTop($('.show-message-user')[0].scrollHeight);
     }
 
@@ -120,7 +134,7 @@ $(document).ready(async () => {
                 url: "/message/getOne",
                 data: $.param({ userId: userId }),
                 contentType: "application/x-www-form-urlencoded",
-                success: function (response) {
+                success: function(response) {
                     if (response.user == 0) {
                         localStorage.removeItem('userName')
                         localStorage.removeItem('socketId')
@@ -138,7 +152,7 @@ $(document).ready(async () => {
                     console.log($('.show-message-user').height());
 
                 },
-                error: function (xhr, status, error) {
+                error: function(xhr, status, error) {
                     console.error(error);
                 }
             });

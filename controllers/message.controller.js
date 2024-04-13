@@ -178,8 +178,9 @@ class messageControllers {
 
     async setConfig(req, res) {
         try {
-            const { msgWelcome } = req.body
-            let config = await configSchema.updateOne({ _id: process.env._ID_CONFIG }, { msgWelcome })
+            const { msgWelcome, msgReply } = req.body
+                // let config = await configSchema.updateOne({ _id: process.env._ID_CONFIG }, { msgWelcome, msgReply })
+            await configSchema.updateOne({ _id: process.env._ID_CONFIG }, { msgWelcome, msgReply })
             return res.status(200).json({ message: 'Thay đổi thành công' })
         } catch (error) {
             console.error(error.message)

@@ -1,8 +1,8 @@
-$(document).ready(function () {
+$(document).ready(function() {
     let HOST = ""
     HOST = "https://livechat.toolv3.io.vn/"
     _apiVeriAccount()
-    $('#btn-login').on('click', async () => {
+    $('#btn-login').on('click', async() => {
         let username = $('#username').val()
         let password = $('#password').val()
         await _apiLogin(username, password)
@@ -14,7 +14,7 @@ $(document).ready(function () {
             type: "POST",
             url: "/account/login",
             data: { username, password },
-            success: function (res) {
+            success: function(res) {
                 if (res.code) {
                     // $('#dialog_login').remove()
                     $('#dialog_login').modal('hide')
@@ -26,7 +26,7 @@ $(document).ready(function () {
                     $('#dialog_login').modal('show')
                 }
             },
-            error: function (error) {
+            error: function(error) {
                 console.log(error)
                 $('#dialog_login').modal('show')
             }
@@ -47,7 +47,7 @@ $(document).ready(function () {
             type: "POST",
             url: "/account/verify",
             data: { token },
-            success: function (res) {
+            success: function(res) {
                 if (!res.expired) {
                     // $('#dialog_login').remove()
                     $('#dialog_login').modal('hide')
@@ -58,11 +58,22 @@ $(document).ready(function () {
                     localStorage.removeItem('token');
                 }
             },
-            error: function (error) {
+            error: function(error) {
                 console.log(error)
                 $('#dialog_login').modal('show')
             }
         })
+    }
+
+    function showMessageCurrent() {
+        const message_current_id = localStorage.getItem('message_current')
+        var elementToClick = document.querySelector(`.item-message[data-userid="${message_current_id}"]`);
+        if (elementToClick) {
+            elementToClick.click();
+        } else {
+            console.log('message current not found');
+        }
+
     }
 
     function start() {
@@ -70,11 +81,19 @@ $(document).ready(function () {
         const newMsg = new Audio('./voice/newMsg.mp3');
         const sendMsg = new Audio('./voice/sendMsg.mp3');
         let userIdCurrent = ''
+
+        let volumeSetting_admin = localStorage.getItem('volumeSetting_admin');
+
+        if (volumeSetting_admin !== 'true' && volumeSetting_admin !== 'false') {
+            localStorage.setItem('volumeSetting_admin', 'true');
+            console.log(localStorage.getItem('volumeSetting_admin'));
+        }
+
         let volume = localStorage.getItem('volumeSetting_admin') === 'true';
         _loadMessage()
 
         $('.volume i').toggleClass('fa-volume-high', volume).toggleClass('fa-volume-xmark', !volume);
-        $('.volume').click(function () {
+        $('.volume').click(function() {
             var icon = $(this).find('i');
             volume = !volume;
             localStorage.setItem('volumeSetting_admin', volume);
@@ -86,8 +105,10 @@ $(document).ready(function () {
         });
 
         socket.on('message', (payload) => {
-            const { userId, socketId, message } = payload;
-            const existingMessageDiv = $(`.container-message .item-message[data-userId="${userId}"]`);
+            const { userId, socketId, message, userName } = payload;
+            console.log(payload)
+            const existingMessageDiv = $(`.container-message .item-message[data-userId="${userId}"][data-username="${userName}"]`);
+
 
             if (volume) newMsg.play()
             let addClassMsgNew = 'message-new';
@@ -110,7 +131,7 @@ $(document).ready(function () {
             }
         });
 
-        $(document).on('click', '.item-message', function () {
+        $(document).on('click', '.item-message', function() {
             $('.item-message').removeClass('message-active');
             $(this).addClass('message-active');
             if ($(this).hasClass('message-new')) $(this).removeClass('message-new')
@@ -120,12 +141,13 @@ $(document).ready(function () {
             userIdCurrent = userId
             console.log(`=> ${userId}`)
             console.log(`=> ${username}`)
+            localStorage.setItem('message_current', userId)
             _loadMessageOneUser(userId)
         });
 
         $('#send-message').on('click', () => { _sendMessage() });
 
-        $('#value-message').on('keypress', function (event) {
+        $('#value-message').on('keypress', function(event) {
             if (event.which === 13 && !event.shiftKey) {
                 _sendMessage();
             }
@@ -137,7 +159,7 @@ $(document).ready(function () {
                 url: "/message/getOne",
                 data: $.param({ userId: userId }),
                 contentType: "application/x-www-form-urlencoded",
-                success: function (response) {
+                success: function(response) {
                     console.log(response)
                     response = response.messages
                     $('.show-message-user').html('')
@@ -149,7 +171,7 @@ $(document).ready(function () {
                     }
                     $('.show-message-user').scrollTop($('.show-message-user')[0].scrollHeight);
                 },
-                error: function (xhr, status, error) {
+                error: function(xhr, status, error) {
                     console.error(error);
                 }
             });
@@ -171,11 +193,11 @@ $(document).ready(function () {
                 type: "POST",
                 url: "/message/getAllUser",
                 data: { token },
-                success: function (response) {
+                success: function(response) {
                     console.log(response)
                     $('#dialog_login').modal('hide')
                     $('.container-message').empty();
-                    response.forEach(function (message) {
+                    response.forEach(function(message) {
                         let addClassMsgNew = message.seen === false ? 'message-new' : ''
                         const messageDiv = $('<div>', {
                             class: `item-message ${addClassMsgNew}`,
@@ -184,8 +206,10 @@ $(document).ready(function () {
                         }).html(`<span class="item-title">Tin nhắn từ</span><br/><span>${message.username}</span>`);
                         $('.container-message').append(messageDiv);
                     });
+
+                    showMessageCurrent()
                 },
-                error: function (error) {
+                error: function(error) {
                     console.error(error);
                     alert('Vui lòng đăng nhập lại')
                     $('#dialog_login').modal('show')
@@ -215,17 +239,18 @@ $(document).ready(function () {
         }
 
         $('.setMsgWelcome').on('click', () => {
-            let msg = $('.valueMsgWelcome').val()
+            let valueMsgWelcome = $('.valueMsgWelcome').val()
+            let valueMsgReply = $('.valueMsgReply').val()
             let token = localStorage.getItem('token')
             $.ajax({
                 type: "POST",
                 url: "/message/setConfig",
-                data: $.param({ msgWelcome: msg, token }),
+                data: $.param({ msgWelcome: valueMsgWelcome, msgReply: valueMsgReply, token }),
                 contentType: "application/x-www-form-urlencoded",
-                success: function (response) {
+                success: function(response) {
                     alert(response.message)
                 },
-                error: function (xhr, status, error) {
+                error: function(xhr, status, error) {
                     console.error(error);
                 }
             });
@@ -235,9 +260,10 @@ $(document).ready(function () {
             type: "POST",
             url: "/message/getConfig",
             contentType: "application/x-www-form-urlencoded",
-            success: function (response) {
+            success: function(response) {
                 console.log(response)
                 $('.valueMsgWelcome').val(response.msgWelcome)
+                $('.valueMsgReply').val(response.msgReply)
             }
         });
     }

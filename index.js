@@ -37,7 +37,7 @@ async function startServerSocket() {
             // console.log('❌❌❌  Admin disconnected:', socket.id)
         })
 
-        socket.on('message', async (payload) => {
+        socket.on('message', async(payload) => {
             const user = listUser.find(user => user.userId == payload.userId)
             if (!user.socketId) return console.log('không có user.socketId')
             await messageController.updateOne(payload, 'admin', true)
@@ -50,7 +50,7 @@ async function startServerSocket() {
     ioUser.on('connection', (socket) => {
         // console.log('✅✅✅ User connected:', socket.id)
 
-        socket.on('init', async (payload) => {
+        socket.on('init', async(payload) => {
             countUserConnect++
             const { userId, socketId, userName } = payload
             sendMessage(`Tin nhắn mới từ : ${userName}`)
@@ -58,8 +58,7 @@ async function startServerSocket() {
             if (index === -1) {
                 listUser.push({ userId, socketId })
                 await messageController.create(payload)
-            }
-            else {
+            } else {
                 listUser[index].socketId = socketId
             }
             if (countUserConnect >= process.env.COUNT_USER_CONNECT) {
@@ -69,7 +68,7 @@ async function startServerSocket() {
 
         })
 
-        socket.on('message', async (payload) => {
+        socket.on('message', async(payload) => {
             await messageController.updateOne(payload, 'user')
             ioAdmin.emit('message', payload)
         })
