@@ -124,7 +124,8 @@ $(document).ready(function() {
             } else {
                 const messageDiv = $('<div>', {
                     class: `item-message ${addClassMsgNew}`,
-                    'data-userId': userId
+                    'data-userId': userId,
+                    'data-username': userName
                 }).html(`<span class="item-title">Tin nhắn từ</span><br/><span>${userId}</span>`);
 
                 $('.container-message').eq(0).prepend(messageDiv);
