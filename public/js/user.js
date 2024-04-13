@@ -2,7 +2,7 @@ $(document).ready(async() => {
     let HOST = ""
         // let page = 1
         // let pageSize = 5
-    HOST = "https://livechat.toolv3.io.vn/"
+        // HOST = "https://livechat.toolv3.io.vn/"
     let msgReplyCount = 0
     const socket = io(HOST, { path: "/user" });
     const newMsg = new Audio('./voice/newMsg.mp3');
@@ -14,7 +14,6 @@ $(document).ready(async() => {
         localStorage.setItem('volumeSetting', 'true');
         console.log(localStorage.getItem('volumeSetting'));
     }
-
 
     let volume = localStorage.getItem('volumeSetting') === 'true';
     let msgWelcome = 'Hello !'
@@ -202,7 +201,7 @@ $(document).ready(async() => {
 function sendMessageYou(content, time) {
     time = time == true ? getCurrentTimeHHMMVietnam() : convertTimeToHHMMVietnam(time)
     return `<div class="item-show-message item-show-message-you float-left">
-                <div class="item-show-message-you-avt"><img src="./img/you.svg" height="40" width="40"></div>
+                <div class="item-show-message-you-avt"><img src="./img/logo-you.png" height="40" width="40"></div>
                 <p>${content}</p>
                 <span>${time}</span>
             </div>`
@@ -220,7 +219,7 @@ function sendMessageMe(content, time) {
 function sendMessageWelcome(content) {
     content = content.replace(/\n/g, '<br/>');
     return `<div class="item-show-message item-show-message-you float-left">
-                <div class="item-show-message-you-avt"><img src="./img/you.svg" height="40" width="40"></div>
+                <div class="item-show-message-you-avt"><img src="./img/logo-you.png" height="40" width="40"></div>
                 <p>${content}</p>
                 <span>${getCurrentTimeHHMMVietnam()}</span>
             </div>`

@@ -1,6 +1,6 @@
 $(document).ready(function() {
     let HOST = ""
-    HOST = "https://livechat.toolv3.io.vn/"
+        // HOST = "https://livechat.toolv3.io.vn/"
     _apiVeriAccount()
     $('#btn-login').on('click', async() => {
         let username = $('#username').val()
@@ -34,7 +34,7 @@ $(document).ready(function() {
     }
 
     async function _apiVeriAccount() {
-        $("#dialog_login").modal("show")
+        // $("#dialog_login").modal("show")
         $("#dialog_login").modal("hide")
         const token = localStorage.getItem('token')
         if (!token || token.length < 10) {
@@ -126,7 +126,7 @@ $(document).ready(function() {
                     class: `item-message ${addClassMsgNew}`,
                     'data-userId': userId,
                     'data-username': userName
-                }).html(`<span class="item-title">Tin nhắn từ</span><br/><span>${userId}</span>`);
+                }).html(`<span class="item-title">Tin nhắn từ</span><br/><span>${userName}</span>`);
 
                 $('.container-message').eq(0).prepend(messageDiv);
             }
@@ -208,7 +208,7 @@ $(document).ready(function() {
                         $('.container-message').append(messageDiv);
                     });
 
-                    showMessageCurrent()
+                    // showMessageCurrent()
                 },
                 error: function(error) {
                     console.error(error);
@@ -223,7 +223,7 @@ $(document).ready(function() {
             if (volume) sendMsg.play()
             const message = $('#value-message').val();
             if (message.length < 1 || userIdCurrent.length < 1) {
-                alert('Nhập tin nhắn hoặc chọn 1 người để nhắn')
+                // alert('Nhập tin nhắn hoặc chọn 1 người để nhắn')
                 $('#value-message').val('')
                 return
             }
@@ -273,7 +273,7 @@ $(document).ready(function() {
 function sendMessageYou(content, time) {
     time = time == true ? getCurrentTimeHHMMVietnam() : convertTimeToHHMMVietnam(time)
     return `<div class="item-show-message item-show-message-you float-left">
-                <div class="item-show-message-you-avt"><img src="./img/me.svg" height="40" width="40"></div>
+                <div class="item-show-message-you-avt"><img src="./img/logo-you.png" height="40" width="40"></div>
                 <p>${content}</p>
                 <span>${time}</span>
             </div>`

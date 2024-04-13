@@ -53,7 +53,7 @@ async function startServerSocket() {
         socket.on('init', async(payload) => {
             countUserConnect++
             const { userId, socketId, userName } = payload
-            sendMessage(`Tin nhắn mới từ : ${userName}`)
+
             const index = listUser.findIndex(user => user.userId === userId)
             if (index === -1) {
                 listUser.push({ userId, socketId })
@@ -70,6 +70,9 @@ async function startServerSocket() {
 
         socket.on('message', async(payload) => {
             await messageController.updateOne(payload, 'user')
+            const { userName, message } = payload
+            sendMessage(`Username : ${userName}
+Message : ${message}`)
             ioAdmin.emit('message', payload)
         })
 
