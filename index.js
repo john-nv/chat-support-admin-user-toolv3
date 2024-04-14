@@ -43,6 +43,21 @@ async function startServerSocket() {
             await messageController.updateOne(payload, 'admin', true)
             ioUser.to(user.socketId).emit('message', payload);
         })
+
+        socket.on('changeUsernameUser', async(payload) => {
+            const { userId, userNameChange } = payload
+
+            const user = listUser.find(user => user.userId == userId)
+            if (!user.socketId) return console.log('không có user.socketId')
+
+            const updateUsername = await messageController.updateUserName(userId, userNameChange)
+
+            if (updateUsername) {
+                ioUser.to(user.socketId).emit('UPDATE_USERNAME', payload);
+            }
+
+            ioAdmin.emit('ALERT_UPDATE_USERNAME', updateUsername.message)
+        })
     })
 
     // count user connect

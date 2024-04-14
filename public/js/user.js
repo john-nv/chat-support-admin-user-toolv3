@@ -89,6 +89,12 @@ $(document).ready(async() => {
         $('.show-message-user').scrollTop($('.show-message-user')[0].scrollHeight);
     });
 
+    socket.on('UPDATE_USERNAME', (payload) => {
+        console.log('UPDATE_USERNAME : ', payload)
+        const { userNameChange } = payload
+        localStorage.setItem('userName', userNameChange)
+    });
+
     $('#send-message').on('click', () => { _sendMessage() });
 
     $('#value-message').on('keypress', function(event) {
@@ -139,6 +145,8 @@ $(document).ready(async() => {
                         localStorage.removeItem('socketId')
                         location.reload()
                     }
+                    console.log(response)
+                    localStorage.setItem('userName', response.userName)
                     if (response.messages) response = response.messages
                     $('.show-message-user').html('')
                     console.log(response.length)

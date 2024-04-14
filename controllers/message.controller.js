@@ -28,6 +28,19 @@ class messageControllers {
         }
     }
 
+    async updateUserName(userId, userName) {
+        try {
+            let user = await messagesSchema.findOne({ userId })
+            if (!user) return { status: 0, message: 'Không tìm thấy userId' }
+            user = await messagesSchema.updateOne({ userId }, { username: userName })
+            if (user.modifiedCount > 0) return { status: 1, message: 'Đã thay đổi tên user' }
+            return { status: 0, message: 'Thay đổi không thành công vui lòng thử lại' }
+        } catch (error) {
+            console.log(error)
+            console.error(error.message)
+        }
+    }
+
     async updateSaveSocketIdUser(data) {
         try {
             data = JSON.stringify(data)
@@ -60,9 +73,18 @@ class messageControllers {
                 { $match: { userId } },
                 { $unwind: "$messages" },
                 { $sort: { "messages.createdAt": -1 } },
-                { $group: { _id: "$_id", messages: { $push: "$messages" } } },
+                {
+                    $group: {
+                        _id: "$_id",
+                        messages: { $push: "$messages" },
+                        username: { $first: "$username" },
+                        userId: { $first: "$userId" }
+                    }
+                },
                 {
                     $project: {
+                        userId: 1,
+                        username: 1,
                         messages: {
                             $slice: ["$messages", startIndex, pageSize]
                         },
@@ -73,11 +95,14 @@ class messageControllers {
                 }
             ]);
             if (messageUser && messageUser.length > 0) {
-                return res.status(200).json({ messages: messageUser[0].messages, totalCount: messageUser[0].totalCount });
-            } {
-                return res.status(200).json({ messages: [], totalCount: 0, user: 0 });
+                return res.status(200).json({
+                    userId: messageUser[0].userId,
+                    userName: messageUser[0].username,
+                    messages: messageUser[0].messages,
+                    totalCount: messageUser[0].totalCount
+                });
             }
-            return res.status(200).json({ messages: [], totalCount: 0 });
+            return res.status(200).json({ messages: [], totalCount: 0, user: 0, userName: 'none', userId: none });
         } catch (error) {
             res.status(500).json([]);
             console.error(error);

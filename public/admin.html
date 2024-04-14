@@ -20,7 +20,7 @@
             <div class="col-3 container-message"></div>
             <div class="col-9 d-flex flex-column show-message">
                 <div class="show-message-title d-flex align-items-center">
-                    <b><span class="userNameCurrent">Chọn 1 User để nhắn tin</span></b>
+                    <span class="userNameCurrent">Chọn 1 User để nhắn tin</span>
                     <div class="ml-auto volume">
                         <i class="fa-solid fa-volume-high"></i>
                     </div>
@@ -55,10 +55,20 @@
             </div>
         </div>
     </div>
-    <div class="mt-5" style="padding: 10px">
-        <h6>Đổi tin nhắn đầu tiên</h6>
-        <textarea class="form-control valueMsgWelcome mb-2" style="height: 150px;"></textarea>
-        <textarea class="form-control valueMsgReply" style="height: 150px;"></textarea>
+    <div class="mt-5 container" style="padding: 5px">
+        <h6 class="font-weight-bold">1. Đổi tên username (sử dụng userId để sửa)</h6>
+        <div class="input-group mt-2">
+            <div class="input-group-prepend">
+                <input type="text" placeholder="userId" class="form-control userIdChange">
+                <input type="text" placeholder="userName" class="form-control ml-2 userNameChange">
+            </div>
+            <button class="btn btn-success ml-2 changeUsername">Thay đổi</button>
+        </div>
+    </div>
+    <div class="mt-2 container" style="padding: 5px">
+        <h6 class="font-weight-bold">2. Thay đổi tin nhắn</h6>
+        <textarea class="form-control valueMsgWelcome mb-2" style="height: 70px;"></textarea>
+        <textarea class="form-control valueMsgReply" style="height: 70px;"></textarea>
         <button class="btn btn-success mt-2 setMsgWelcome" style="margin-bottom: 100px;">Lưu</button>
     </div>
 </body>

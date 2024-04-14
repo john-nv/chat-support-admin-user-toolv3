@@ -15,6 +15,12 @@
     border: 1px solid rgb(190, 190, 190);
     border-radius: 5px;
     overflow: hidden;
+    font-weight: 400;
+}
+
+.userNameCurrent {
+    /* padding-top: 7px; */
+    line-height: 14px;
 }
 
 .show-message-user {

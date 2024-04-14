@@ -132,16 +132,34 @@ $(document).ready(function() {
             }
         });
 
+        socket.on('ALERT_UPDATE_USERNAME', (msg) => {
+            alert(msg)
+        });
+
+        $('.changeUsername').on('click', () => {
+            const userId = $('.userIdChange').val().trim()
+            const userNameChange = $('.userNameChange').val().trim()
+            if (userId.length < 3 || userNameChange.length < 1) return alert('Vui lòng kiểm tra lại')
+            socket.emit('changeUsernameUser', { userId, userNameChange })
+
+            var elementUpdate = document.querySelector(`.item-message[data-userid="${userId}"]`);
+            elementUpdate.dataset.username = userNameChange;
+            spans = elementUpdate.querySelectorAll('span');
+            spans[1].textContent = userNameChange;
+
+            $('.userIdChange').val('')
+            $('.userNameChange').val('')
+        })
+
         $(document).on('click', '.item-message', function() {
             $('.item-message').removeClass('message-active');
             $(this).addClass('message-active');
             if ($(this).hasClass('message-new')) $(this).removeClass('message-new')
             const userId = $(this).data('userid');
-            const username = $(this).data('username');
-            $('.userNameCurrent').text(`Chat với ${username}`);
+            // const username = $(this).data('username');
             userIdCurrent = userId
             console.log(`=> ${userId}`)
-            console.log(`=> ${username}`)
+                // console.log(`=> ${username}`)
             localStorage.setItem('message_current', userId)
             _loadMessageOneUser(userId)
         });
@@ -162,6 +180,7 @@ $(document).ready(function() {
                 contentType: "application/x-www-form-urlencoded",
                 success: function(response) {
                     console.log(response)
+                    $('.userNameCurrent').text(`${response.userName} | ${response.userId}`);
                     response = response.messages
                     $('.show-message-user').html('')
                     for (let i = 0; i < response.length; i++) {
